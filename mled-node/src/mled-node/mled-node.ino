@@ -73,6 +73,10 @@ void setup() {
 void loop() {
   // Process Apple MIDI messages
   AppleMIDI.run();
+  yield();
+
+  MDNS.update();
+  yield();
 
 }
 
@@ -100,6 +104,17 @@ void setupAppleMidi() {
 
   Serial.println("Starting AppleMIDI session");
   AppleMIDI.begin(gNodeName.c_str());
+
+  const char* service = "apple-midi";
+  const char* protocol = "udp";
+  int port = 5004;
+  Serial.print("Adding mDNS service ");
+  Serial.print(service);
+  Serial.print(" ");
+  Serial.print(protocol);
+  Serial.print(" ");
+  Serial.println(port);
+  MDNS.addService(service, protocol, port);
 
   // Connect event handlers
   AppleMIDI.OnConnected(OnAppleMidiConnected);
