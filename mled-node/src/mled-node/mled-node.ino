@@ -55,13 +55,14 @@ void setup() {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
-  // Set up our .local hostname
-  gNodeName = String("mled-") + String(NODE_NUMBER);
+  // NeoPixels are go!
+  gLightStrip.setup();
 
   // Let background processing happen
   yield();
 
   // Set up our mled-n.local hostname
+  gNodeName = String("mled-") + String(NODE_NUMBER);
   setupBonjour();
 
   yield();
@@ -167,6 +168,7 @@ void OnAppleMidiDisconnected(uint32_t ssrc) {
   gMidiIsConnected  = false;
   Serial.println(F("Disconnected"));
   // XXX in this case, we should re-connect!
+  // $$$ turn off LEDs when disconnected for "awhile"
 }
 
 // -----------------------------------------------------------------------------
@@ -175,7 +177,7 @@ void OnAppleMidiDisconnected(uint32_t ssrc) {
 void OnAppleMidiNoteOn(byte channel, byte note, byte velocity) {
   statusLedOn();
 
-  gLightStrip.ledOn(1); // XXX
+  gLightStrip.ledOn(0, 1.0f); // XXX
   
   Serial.print(F("Incoming NoteOn from channel:"));
   Serial.print(channel);
@@ -184,6 +186,9 @@ void OnAppleMidiNoteOn(byte channel, byte note, byte velocity) {
   Serial.print(F(" velocity:"));
   Serial.print(velocity);
   Serial.println();
+
+  gLightStrip.updateValues();
+  gLightStrip.sendToStrip();
 }
 
 // -----------------------------------------------------------------------------
@@ -192,7 +197,7 @@ void OnAppleMidiNoteOn(byte channel, byte note, byte velocity) {
 void OnAppleMidiNoteOff(byte channel, byte note, byte velocity) {
   statusLedOff();
 
-  gLightStrip.ledOff(1); // XXX
+  gLightStrip.ledOff(0); // XXX
 
   Serial.print(F("Incoming NoteOff from channel:"));
   Serial.print(channel);
@@ -201,6 +206,9 @@ void OnAppleMidiNoteOff(byte channel, byte note, byte velocity) {
   Serial.print(F(" velocity:"));
   Serial.print(velocity);
   Serial.println();
+
+  gLightStrip.updateValues();
+  gLightStrip.sendToStrip();
 }
 
 
