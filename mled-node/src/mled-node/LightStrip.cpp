@@ -89,5 +89,6 @@ void LightStrip::updateValues()
 
 void LightStrip::sendToStrip()
 {
+    updateValues();
     gStrip.Show();
 }

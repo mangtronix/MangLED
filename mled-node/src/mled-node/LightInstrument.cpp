@@ -15,11 +15,13 @@ LightInstrument::LightInstrument(uint8_t midiChannel, LightStrip* lightStrip)
     _segmentCount = _lightStrip->pixelCount();
 }
 
-// Event handlers
+////// Event handlers //////
+
 void LightInstrument::onAppleMidiConnected(uint32_t ssrc, char* name)
 {
     Serial.println("LI: got connect");
 }
+
 
 void LightInstrument::onAppleMidiDisconnected(uint32_t ssrc)
 {
@@ -51,34 +53,52 @@ void LightInstrument::onAppleMidiNoteOff(byte channel, byte note, byte velocity)
 
 void LightInstrument::onAppleMidiControlChange(byte channel, byte controller, byte value)
 {
+    // Determine if the received controller was one we have mapped, and act accordingly
+
     if (shouldRespondToChannel(channel)) {
         Serial.print("LI: got CC ");
-        Serial.println(controller);
+        Serial.print(controller);
+        Serial.print(" ");
+
+        
+        ControllerType ccType = controllerType(controller);
+        if (ccType == CONTROLLER_UNKNOWN) {
+            Serial.println("UNKNOWN");
+            return;
+        }
+
+        if (ccType == CONTROLLER_MASTER_BRIGHTNESS) {
+            Serial.println("MASTER BRIGHTNESS");
+            _lightStrip->setMasterBrightness(valueToMasterBrightness(value));
+            return;
+        }
 
         uint8_t segment = controllerToSegment(controller);
         if (segment >=0 && segment < _segmentCount) {
-            switch (controllerType(controller)) {
+            switch (ccType) {
                 case CONTROLLER_HUE:
+                    Serial.println("HUE");
                     _lightStrip->setHue(segment, valueToHue(value));
                     break;
 
                 case CONTROLLER_BRIGHTNESS:
+                    Serial.println("BRIGHTNESS");
                     _lightStrip->setBrightnessMultiplier(segment, valueToBrightnessMultiplier(value));
                     break;
 
-                case CONTROLLER_MASTER_BRIGHTNESS:
-                    _lightStrip->setMasterBrightness(valueToMasterBrightness(value));
-                    break;
-
-                case CONTROLLER_UNKNOWN:
-                    // Not mapped
-                    break;
+                default:
+                    Serial.print("unhandled");
             }
+        } else {
+            Serial.println(" invalid segment");
         }
 
     }
 }
 
+
+
+///// Mapping functions //////
 
 uint8_t LightInstrument::noteToSegment(byte note)
 {
@@ -149,6 +169,8 @@ ControllerType LightInstrument::controllerType(byte controller)
     return CONTROLLER_UNKNOWN;
 }
 
+
+///// LED strip functions /////
 void LightInstrument::segmentOn(uint8_t segment, float brightness)
 {
     // Currently a segment corresponds directly to a single LED

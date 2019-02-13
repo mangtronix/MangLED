@@ -89,7 +89,7 @@ void setup() {
   pLightInstrument->setBaseNote(8);
   pLightInstrument->setBaseHueController(1);
   pLightInstrument->setBaseBrightnessController(11);
-  pLightInstrument->setMasterBrightnessController(10);
+  pLightInstrument->setMasterBrightnessController(9);
 
   Serial.println("Finished setup, here we go!");
   statusLedOff();
@@ -208,7 +208,6 @@ void OnAppleMidiNoteOn(byte channel, byte note, byte velocity) {
 
   pLightInstrument->onAppleMidiNoteOn(channel, note, velocity);
 
-  gLightStrip.updateValues();
   gLightStrip.sendToStrip();
 }
 
@@ -230,7 +229,6 @@ void OnAppleMidiNoteOff(byte channel, byte note, byte velocity) {
 
   pLightInstrument->onAppleMidiNoteOff(channel, note, velocity);
 
-  gLightStrip.updateValues();
   gLightStrip.sendToStrip();
 }
 
@@ -244,7 +242,6 @@ void OnAppleMidiControlChange(byte channel, byte controller, byte value)
 
   pLightInstrument->onAppleMidiControlChange(channel, controller, value);
 
-  gLightStrip.updateValues();
   gLightStrip.sendToStrip();
 }
 
