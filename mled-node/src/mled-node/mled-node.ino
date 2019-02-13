@@ -58,6 +58,10 @@ void setup() {
   // NeoPixels are go!
   gLightStrip.setup();
 
+  // This will turn the NeoPixels off
+  gLightStrip.updateValues();
+  gLightStrip.sendToStrip();
+
   // Let background processing happen
   yield();
 
