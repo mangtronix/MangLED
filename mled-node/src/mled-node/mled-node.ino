@@ -19,6 +19,9 @@ void OnAppleMidiControlChange(byte channel, byte controller, byte value);
 #include "LightStrip.h"
 LightStrip gLightStrip;
 
+#include "LightInstrument.h"
+LightInstrument *pLightInstrument;
+
 const char* gSSID = WIFI_SSID;
 const char* gPassword = WIFI_PASSWORD;
 const int gNodeNumber = NODE_NUMBER;
@@ -79,6 +82,8 @@ void setup() {
   // - show that everything is OK
   // - add OTA update capability
 
+  // Create the light instrument and attach the led strip
+  pLightInstrument = new LightInstrument(NODE_NUMBER, &gLightStrip);
 
   Serial.println("Finished setup, here we go!");
   statusLedOff();
@@ -143,7 +148,7 @@ void setupAppleMidi() {
   AppleMIDI.OnReceiveNoteOn(OnAppleMidiNoteOn);
   AppleMIDI.OnReceiveNoteOff(OnAppleMidiNoteOff);
 
-  // AppleMIDI.OnReceiveControlChange(OnAppleMidiControlChange);
+  AppleMIDI.OnReceiveControlChange(OnAppleMidiControlChange);
 
   Serial.println("Open Audio Midi Setup on OSX, or rtpMIDI on Windows");
   Serial.print("Add device named ");
@@ -163,6 +168,8 @@ void OnAppleMidiConnected(uint32_t ssrc, char* name) {
   gMidiIsConnected  = true;
   Serial.print(F("Connected to session "));
   Serial.println(name);
+
+  pLightInstrument->onAppleMidiConnected(ssrc, name);
 }
 
 // -----------------------------------------------------------------------------
@@ -173,6 +180,8 @@ void OnAppleMidiDisconnected(uint32_t ssrc) {
   Serial.println(F("Disconnected"));
   // XXX in this case, we should re-connect!
   // $$$ turn off LEDs when disconnected for "awhile"
+
+  pLightInstrument->onAppleMidiDisconnected(ssrc);
 }
 
 // -----------------------------------------------------------------------------
@@ -190,6 +199,8 @@ void OnAppleMidiNoteOn(byte channel, byte note, byte velocity) {
   Serial.print(F(" velocity:"));
   Serial.print(velocity);
   Serial.println();
+
+  pLightInstrument->onAppleMidiNoteOn(channel, note, velocity);
 
   gLightStrip.updateValues();
   gLightStrip.sendToStrip();
@@ -211,8 +222,21 @@ void OnAppleMidiNoteOff(byte channel, byte note, byte velocity) {
   Serial.print(velocity);
   Serial.println();
 
+  pLightInstrument->onAppleMidiNoteOff(channel, note, velocity);
+
   gLightStrip.updateValues();
   gLightStrip.sendToStrip();
+}
+
+void OnAppleMidiControlChange(byte channel, byte controller, byte value)
+{
+  Serial.print(F("Got control change "));
+  Serial.print(controller);
+  Serial.print(F(" - "));
+  Serial.print(value);
+  Serial.println();
+
+  pLightInstrument->onAppleMidiControlChange(channel, controller, value);
 }
 
 
