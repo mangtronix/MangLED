@@ -3,10 +3,13 @@
 
 
 // Define your wifi SSID / pass in the external header file
-#include "wifi_private.h"
+#include "private_config.h"
 
-const char* ssid = WIFI_SSID;
-const char* password = WIFI_PASSWORD;
+const char* gSSID = WIFI_SSID;
+const char* gPassword = WIFI_PASSWORD;
+const int gNodeNumber = NODE_NUMBER;
+
+String gNodeName;
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
@@ -16,9 +19,9 @@ void setup() {
 
   // Connect to wifi
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
+  WiFi.begin(gSSID, gPassword);
   Serial.print("Connecting to SSID: ");
-  Serial.println(ssid);
+  Serial.println(gSSID);
 
   // Wait for connection
   while (WiFi.status() != WL_CONNECTED) {
@@ -27,11 +30,33 @@ void setup() {
   }
   Serial.println("");
   Serial.print("Connected to SSID ");
-  Serial.println(ssid);
+  Serial.println(gSSID);
   Serial.println();
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
+  // Set up our .local hostname
+  gNodeName = String("mled-") + String(NODE_NUMBER);
+   // Set up mDNS responder:
+  // - first argument is the domain name, in this example
+  //   the fully-qualified domain name is "esp8266.local"
+  // - second argument is the IP address to advertise
+  //   we send our IP address on the WiFi network
+  Serial.println("Setting up mDNS / Bonjour with hostname / IP:");
+  Serial.print(gNodeName);
+  Serial.print(".local ");
+  Serial.println(WiFi.localIP());
+  if (!MDNS.begin(gNodeName.c_str())) {
+    Serial.println("Error setting up MDNS responder!");
+    while (1) {
+      Serial.print(".");
+      delay(1000);
+      // XXX break out if not done after awhile
+    }
+  }
+  Serial.println("mDNS responder started");
+
+  Serial.println("Finished setup, here we go!");
 }
 
 void loop() {
@@ -42,3 +67,4 @@ void loop() {
   Serial.print(".");
 
 }
+
