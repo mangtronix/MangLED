@@ -16,6 +16,8 @@ void setup() {
   digitalWrite(LED_BUILTIN, LOW);
 
   Serial.begin(115200);
+  Serial.println();
+  Serial.println();
 
   // Connect to wifi
   WiFi.mode(WIFI_STA);
@@ -37,11 +39,29 @@ void setup() {
 
   // Set up our .local hostname
   gNodeName = String("mled-") + String(NODE_NUMBER);
+
+  // Let background processing happen
+  yield();
+
+  // Set up our mled-n.local hostname
+  setupBonjour();
+
+
+  Serial.println("Finished setup, here we go!");
+}
+
+void loop() {
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(500);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(500);
+  Serial.print(".");
+
+}
+
+
+void setupBonjour() {
    // Set up mDNS responder:
-  // - first argument is the domain name, in this example
-  //   the fully-qualified domain name is "esp8266.local"
-  // - second argument is the IP address to advertise
-  //   we send our IP address on the WiFi network
   Serial.println("Setting up mDNS / Bonjour with hostname / IP:");
   Serial.print(gNodeName);
   Serial.print(".local ");
@@ -56,16 +76,4 @@ void setup() {
     }
   }
   Serial.println("mDNS responder started");
-
-  Serial.println("Finished setup, here we go!");
 }
-
-void loop() {
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(500);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(500);
-  Serial.print(".");
-
-}
-
