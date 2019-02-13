@@ -52,6 +52,7 @@ void setup() {
       Serial.print(".");
       delay(1000);
       // XXX break out if not done after awhile
+      // XXX what happens if name is already registered by another node?
     }
   }
   Serial.println("mDNS responder started");
