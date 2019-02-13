@@ -33,12 +33,29 @@ void statusLedOn();
 String gNodeName;
 
 void setup() {
+  // Hello, world!
   pinMode(STATUS_LED, OUTPUT);
   statusLedOn();
 
+
+  // Start Serial with debugging info
   Serial.begin(115200);
   Serial.println();
   Serial.println();
+
+
+  // Create the light instrument and attach the led strip
+  gLightStrip.setup();
+  gLightStrip.sendToStrip(); // Turn LED strip off
+  pLightInstrument = new LightInstrument(11, &gLightStrip);
+  pLightInstrument->sendToStrip(); // Initial display on the LED strip
+
+  // A mapping for X-Touch MIDI controller
+  pLightInstrument->setBaseNote(8);
+  pLightInstrument->setBaseHueController(1);
+  pLightInstrument->setBaseBrightnessController(11);
+  pLightInstrument->setMasterBrightnessController(9);
+
 
   // Connect to wifi
   WiFi.mode(WIFI_STA);
@@ -58,38 +75,29 @@ void setup() {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
-  // NeoPixels are go!
-  gLightStrip.setup();
-
-  // This will turn the NeoPixels off
-  gLightStrip.updateValues();
-  gLightStrip.sendToStrip();
 
   // Let background processing happen
   yield();
+
 
   // Set up our mled-n.local hostname
   gNodeName = String("mled-") + String(NODE_NUMBER);
   setupBonjour();
 
+
+  // Can't hurt
   yield();
+
 
   // Set up a receiving AppleMIDI session
   setupAppleMidi();
+
 
   // $$$ TODO
   // - blink the number of the node
   // - show that everything is OK
   // - add OTA update capability
 
-  // Create the light instrument and attach the led strip
-  pLightInstrument = new LightInstrument(11, &gLightStrip);
-
-  // A mapping for X-Touch MIDI controller
-  pLightInstrument->setBaseNote(8);
-  pLightInstrument->setBaseHueController(1);
-  pLightInstrument->setBaseBrightnessController(11);
-  pLightInstrument->setMasterBrightnessController(9);
 
   Serial.println("Finished setup, here we go!");
   statusLedOff();
@@ -126,6 +134,7 @@ void setupBonjour() {
   }
   Serial.println("mDNS responder started");
 }
+
 
 void setupAppleMidi() {
   // Create a receiving session - the remote master needs to connect to us
@@ -196,8 +205,6 @@ void OnAppleMidiDisconnected(uint32_t ssrc) {
 void OnAppleMidiNoteOn(byte channel, byte note, byte velocity) {
   statusLedOn();
 
-  gLightStrip.ledOn(0, 1.0f); // XXX
-  
   Serial.print(F("Incoming NoteOn from channel:"));
   Serial.print(channel);
   Serial.print(F(" note:"));
@@ -207,8 +214,8 @@ void OnAppleMidiNoteOn(byte channel, byte note, byte velocity) {
   Serial.println();
 
   pLightInstrument->onAppleMidiNoteOn(channel, note, velocity);
+  pLightInstrument->sendToStrip();
 
-  gLightStrip.sendToStrip();
 }
 
 // -----------------------------------------------------------------------------
@@ -216,8 +223,6 @@ void OnAppleMidiNoteOn(byte channel, byte note, byte velocity) {
 // -----------------------------------------------------------------------------
 void OnAppleMidiNoteOff(byte channel, byte note, byte velocity) {
   statusLedOff();
-
-  gLightStrip.ledOff(0); // XXX
 
   Serial.print(F("Incoming NoteOff from channel:"));
   Serial.print(channel);
@@ -228,8 +233,8 @@ void OnAppleMidiNoteOff(byte channel, byte note, byte velocity) {
   Serial.println();
 
   pLightInstrument->onAppleMidiNoteOff(channel, note, velocity);
+  pLightInstrument->sendToStrip();
 
-  gLightStrip.sendToStrip();
 }
 
 void OnAppleMidiControlChange(byte channel, byte controller, byte value)
@@ -241,8 +246,8 @@ void OnAppleMidiControlChange(byte channel, byte controller, byte value)
   Serial.println();
 
   pLightInstrument->onAppleMidiControlChange(channel, controller, value);
+  pLightInstrument->sendToStrip();
 
-  gLightStrip.sendToStrip();
 }
 
 

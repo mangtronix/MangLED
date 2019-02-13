@@ -37,6 +37,9 @@ class LightInstrument
         bool shouldRespondToChannel(byte channel) { return ((_midiChannel <= 0) || (channel == _midiChannel)); };
 
 
+        // Update what's shown on the LED strip
+        void sendToStrip();
+
 
         ///// MIDI Mapping
 

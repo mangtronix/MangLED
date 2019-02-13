@@ -13,6 +13,7 @@ LightInstrument::LightInstrument(uint8_t midiChannel, LightStrip* lightStrip)
 
     // Currently we map one pixel to one segment/controller/note
     _segmentCount = _lightStrip->pixelCount();
+
 }
 
 ////// Event handlers //////
@@ -171,6 +172,13 @@ ControllerType LightInstrument::controllerType(byte controller)
 
 
 ///// LED strip functions /////
+
+void LightInstrument::sendToStrip()
+{
+    _lightStrip->sendToStrip();
+}
+
+
 void LightInstrument::segmentOn(uint8_t segment, float brightness)
 {
     // Currently a segment corresponds directly to a single LED
