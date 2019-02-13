@@ -47,14 +47,14 @@ void setup() {
   // Create the light instrument and attach the led strip
   gLightStrip.setup();
   gLightStrip.sendToStrip(); // Turn LED strip off
-  pLightInstrument = new LightInstrument(11, &gLightStrip);
+  pLightInstrument = new LightInstrument(MLED_CHANNEL, &gLightStrip);
   pLightInstrument->sendToStrip(); // Initial display on the LED strip
 
   // A mapping for X-Touch MIDI controller
-  pLightInstrument->setBaseNote(8);
-  pLightInstrument->setBaseHueController(1);
-  pLightInstrument->setBaseBrightnessController(11);
-  pLightInstrument->setMasterBrightnessController(9);
+  pLightInstrument->setBaseNote(MLED_BASE_NOTE);
+  pLightInstrument->setBaseHueController(MLED_BASE_HUE_CC);
+  pLightInstrument->setBaseBrightnessController(MLED_BASE_BRIGHTNESS_CC);
+  pLightInstrument->setMasterBrightnessController(MLED_MASTER_BRIGHTNESS_CC);
 
 
   // Connect to wifi
@@ -91,6 +91,10 @@ void setup() {
 
   // Set up a receiving AppleMIDI session
   setupAppleMidi();
+
+
+  // Say what we're listening for
+  pLightInstrument->printParameters();
 
 
   // $$$ TODO

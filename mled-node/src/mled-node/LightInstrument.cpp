@@ -1,7 +1,7 @@
 #include "LightInstrument.h"
 #include "LightStrip.h"
 
-LightInstrument::LightInstrument(uint8_t midiChannel, LightStrip* lightStrip)
+LightInstrument::LightInstrument(int8_t midiChannel, LightStrip* lightStrip)
 {
     _baseNote = 0;
     _baseBrightnessCC = 0;
@@ -14,6 +14,22 @@ LightInstrument::LightInstrument(uint8_t midiChannel, LightStrip* lightStrip)
     // Currently we map one pixel to one segment/controller/note
     _segmentCount = _lightStrip->pixelCount();
 
+}
+
+void LightInstrument::printParameters()
+{
+    Serial.print("LI: MIDI channel ");
+    Serial.println(_midiChannel);
+    Serial.print("LI: baseNote(");
+    Serial.print(_baseNote);
+    Serial.print(") hueCC(");
+    Serial.print(_baseHueCC);
+    Serial.print(") brightnessCC (");
+    Serial.print(_baseBrightnessCC);
+    Serial.print(") segmentCount(");
+    Serial.print(_segmentCount);
+    Serial.println(")");
+    Serial.println();
 }
 
 ////// Event handlers //////

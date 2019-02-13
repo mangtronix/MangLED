@@ -12,19 +12,19 @@ class LightInstrument
     public:
 
         // midiChannel can be <= 0 for omni response
-        LightInstrument(uint8_t midiChannel, LightStrip* lightStrip);
+        LightInstrument(int8_t midiChannel, LightStrip* lightStrip);
 
         // First note, goes to LED 0
-        void setBaseNote(uint8_t note) { _baseNote = note; };
+        void setBaseNote(byte note) { _baseNote = note; };
 
         // First controller for hue
-        void setBaseHueController(uint8_t cc) { _baseHueCC = cc; };
+        void setBaseHueController(byte cc) { _baseHueCC = cc; };
 
         // First controller for the brightness multipliers
-        void setBaseBrightnessController(uint8_t cc) { _baseBrightnessCC = cc; };
+        void setBaseBrightnessController(byte cc) { _baseBrightnessCC = cc; };
 
         // Master brightness controller
-        void setMasterBrightnessController(uint8_t cc) { _masterBrightnessCC = cc; };
+        void setMasterBrightnessController(byte cc) { _masterBrightnessCC = cc; };
 
 
         // Event handlers
@@ -39,6 +39,9 @@ class LightInstrument
 
         // Update what's shown on the LED strip
         void sendToStrip();
+
+        // Dump some useful information
+        void printParameters();
 
 
         ///// MIDI Mapping
@@ -61,11 +64,11 @@ class LightInstrument
         void segmentOff(uint8_t segment);
 
     private:
-        uint8_t _midiChannel;
-        uint8_t _baseNote;
-        uint8_t _baseHueCC;
-        uint8_t _baseBrightnessCC;
-        uint8_t _masterBrightnessCC;
+        int8_t _midiChannel;
+        byte _baseNote;
+        byte _baseHueCC;
+        byte _baseBrightnessCC;
+        byte _masterBrightnessCC;
         uint8_t _segmentCount; // count of addressable light elements
 
         LightStrip* _lightStrip;
