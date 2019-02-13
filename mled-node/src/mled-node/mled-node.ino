@@ -1,6 +1,17 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 
+
+// Define your wifi SSID / pass in the external header file
+#include "private_config.h"
+const char* gSSID = WIFI_SSID;
+const char* gPassword = WIFI_PASSWORD;
+const int gNodeNumber = NODE_NUMBER;
+
+
+// Apple MIDI library allows us to connect to MIDI network sessions
+// Server is builtin to OSX (Audio Midi Setup)
+// On Windows you need to install rtpMIDI
 #include "AppleMidi.h"
 APPLEMIDI_CREATE_INSTANCE(WiFiUDP, AppleMIDI);
 bool gMidiIsConnected = false;
@@ -12,28 +23,31 @@ void OnAppleMidiNoteOn(byte channel, byte note, byte velocity);
 void OnAppleMidiNoteOff(byte channel, byte note, byte velocity);
 void OnAppleMidiControlChange(byte channel, byte controller, byte value);
 
-// Define your wifi SSID / pass in the external header file
-#include "private_config.h"
 
-// Manager for the LED strip
+
+// Manager for the LED strip - talks directly to the NeoPixels
 #include "LightStrip.h"
 LightStrip gLightStrip;
 
+// Our "light instrument" that responds to MIDI data and decides
+// what to send to the LightStrip
 #include "LightInstrument.h"
 LightInstrument *pLightInstrument;
 
-const char* gSSID = WIFI_SSID;
-const char* gPassword = WIFI_PASSWORD;
-const int gNodeNumber = NODE_NUMBER;
 
+// LED showing basic status (connecting, MIDI data received)
 #define STATUS_LED LED_BUILTIN
 void statusLedOff();
 void statusLedOn();
 
+
+// The name of our node, that we will register with mDNS / Bonjour
+// e.g. mled-7.local
 String gNodeName;
 
+
 void setup() {
-  // Hello, world!
+  // Hello, world! Turn the light on.
   pinMode(STATUS_LED, OUTPUT);
   statusLedOn();
 
@@ -50,7 +64,8 @@ void setup() {
   pLightInstrument = new LightInstrument(MLED_CHANNEL, &gLightStrip);
   pLightInstrument->sendToStrip(); // Initial display on the LED strip
 
-  // A mapping for X-Touch MIDI controller
+  // Set up the mapping of MIDI controllers and notes
+  // Set these in the private_config.h file
   pLightInstrument->setBaseNote(MLED_BASE_NOTE);
   pLightInstrument->setBaseHueController(MLED_BASE_HUE_CC);
   pLightInstrument->setBaseBrightnessController(MLED_BASE_BRIGHTNESS_CC);
@@ -93,7 +108,7 @@ void setup() {
   setupAppleMidi();
 
 
-  // Say what we're listening for
+  // Print out what we're listening for
   pLightInstrument->printParameters();
 
 
