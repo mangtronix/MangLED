@@ -65,6 +65,11 @@ void setup() {
   // Set up a receiving AppleMIDI session
   setupAppleMidi();
 
+  // $$$ TODO
+  // - blink the number of the node
+  // - show that everything is OK
+  // - add OTA update capability
+
 
   Serial.println("Finished setup, here we go!");
   statusLedOff();
@@ -77,6 +82,9 @@ void loop() {
 
   MDNS.update();
   yield();
+
+  // $$$ TODO
+  // - show that we are alive, every n seconds
 
 }
 
@@ -105,6 +113,9 @@ void setupAppleMidi() {
   Serial.println("Starting AppleMIDI session");
   AppleMIDI.begin(gNodeName.c_str());
 
+
+  // Register as an Apple MIDI receiver
+  // XXX this doesn't always work, debug
   const char* service = "apple-midi";
   const char* protocol = "udp";
   int port = 5004;
