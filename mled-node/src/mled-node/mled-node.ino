@@ -15,6 +15,10 @@ void OnAppleMidiControlChange(byte channel, byte controller, byte value);
 // Define your wifi SSID / pass in the external header file
 #include "private_config.h"
 
+// Manager for the LED strip
+#include "LightStrip.h"
+LightStrip gLightStrip;
+
 const char* gSSID = WIFI_SSID;
 const char* gPassword = WIFI_PASSWORD;
 const int gNodeNumber = NODE_NUMBER;
@@ -162,6 +166,7 @@ void OnAppleMidiConnected(uint32_t ssrc, char* name) {
 void OnAppleMidiDisconnected(uint32_t ssrc) {
   gMidiIsConnected  = false;
   Serial.println(F("Disconnected"));
+  // XXX in this case, we should re-connect!
 }
 
 // -----------------------------------------------------------------------------
@@ -169,6 +174,8 @@ void OnAppleMidiDisconnected(uint32_t ssrc) {
 // -----------------------------------------------------------------------------
 void OnAppleMidiNoteOn(byte channel, byte note, byte velocity) {
   statusLedOn();
+
+  gLightStrip.ledOn(1); // XXX
   
   Serial.print(F("Incoming NoteOn from channel:"));
   Serial.print(channel);
@@ -184,6 +191,8 @@ void OnAppleMidiNoteOn(byte channel, byte note, byte velocity) {
 // -----------------------------------------------------------------------------
 void OnAppleMidiNoteOff(byte channel, byte note, byte velocity) {
   statusLedOff();
+
+  gLightStrip.ledOff(1); // XXX
 
   Serial.print(F("Incoming NoteOff from channel:"));
   Serial.print(channel);
