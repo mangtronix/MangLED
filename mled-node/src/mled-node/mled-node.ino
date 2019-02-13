@@ -83,7 +83,13 @@ void setup() {
   // - add OTA update capability
 
   // Create the light instrument and attach the led strip
-  pLightInstrument = new LightInstrument(NODE_NUMBER, &gLightStrip);
+  pLightInstrument = new LightInstrument(11, &gLightStrip);
+
+  // A mapping for X-Touch MIDI controller
+  pLightInstrument->setBaseNote(8);
+  pLightInstrument->setBaseHueController(1);
+  pLightInstrument->setBaseBrightnessController(11);
+  pLightInstrument->setMasterBrightnessController(10);
 
   Serial.println("Finished setup, here we go!");
   statusLedOff();
@@ -237,6 +243,9 @@ void OnAppleMidiControlChange(byte channel, byte controller, byte value)
   Serial.println();
 
   pLightInstrument->onAppleMidiControlChange(channel, controller, value);
+
+  gLightStrip.updateValues();
+  gLightStrip.sendToStrip();
 }
 
 

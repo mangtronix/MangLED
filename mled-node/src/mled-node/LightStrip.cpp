@@ -49,19 +49,19 @@ void LightStrip::ledOff(uint16_t index)
 // Hue for the pixel, 0..1., red=0
 void LightStrip::setHue(uint16_t index, float hue)
 {
-
+    _hueValues[index] = hue;
 }
 
 // Brightness multiplier for individual pixels
 void LightStrip::setBrightnessMultiplier(uint16_t index, float multiplier)
 {
-
+    _brightnessMultipliers[index] = multiplier;
 }
 
 // Brightness multiplier for all pixels
 void LightStrip::setMasterBrightness(float brightness)
 {
-
+    _masterBrightness = brightness;
 }
 
 // Set pixel colors in internal buffer
