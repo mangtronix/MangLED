@@ -1,6 +1,13 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 
+// -- For Wemos D1 Mini --
+// Connect NeoPixel pins to D1 Mini pins
+//   +5V  -> 5V
+//    Din -> RX
+//    GND -> GND
+//
+// 2019-02-14 Tested and working with 5 LED strip, powered USB hub
 
 // Define your wifi SSID / pass in the external header file
 #include "private_config.h"
