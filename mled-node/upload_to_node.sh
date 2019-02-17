@@ -16,6 +16,7 @@ fi
 NODE=$1
 OTA_AUTH=superinsecure
 OTA_TARGET=mled-$NODE.local
+PIO_ENV=node$NODE
 
 if [ $# -gt 1 ]
   then
@@ -26,4 +27,4 @@ echo "Flashing node $1 at $OTA_TARGET"
 
 export PLATFORMIO_UPLOAD_FLAGS=--auth=$OTA_AUTH
 
-pio run -e d1_mini_node$1 -t upload --upload-port=$OTA_TARGET
+pio run -e $PIO_ENV -t upload --upload-port=$OTA_TARGET
