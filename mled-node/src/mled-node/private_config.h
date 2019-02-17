@@ -30,11 +30,6 @@
 #define NODE_NUMBER 1
 #endif
 
-// Number of physical pixels
-#ifndef PIXEL_COUNT
-#define PIXEL_COUNT 5
-#endif
-
 // The MIDI channel to respond to. Can be <= 0 to respond on all channels (omni)
 #ifndef MLED_CHANNEL
 //#define MLED_CHANNEL NODE_NUMBER
@@ -60,6 +55,29 @@
 #ifndef MLED_MASTER_BRIGHTNESS_CC
 #define MLED_MASTER_BRIGHTNESS_CC 9
 #endif
+
+
+
+// Physical LED strip defines
+// It's possible to define these separately for the different nodes by editing
+// the build_flags in platformio.ini or doing a manual #define in your source file
+
+#ifndef LED_PIN
+#define LED_PIN D3
+#endif
+
+#ifndef LED_COUNT
+#define LED_COUNT 7
+#endif
+
+#ifndef LED_TYPE
+#define LED_TYPE WS2812
+#endif
+
+#ifndef LED_COLOR_ORDER
+#define LED_COLOR_ORDER GRB
+#endif
+
 
 
 #endif

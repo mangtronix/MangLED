@@ -1,18 +1,11 @@
 #include "Arduino.h"
 #include "LightStrip.h"
 
-// Get the PIXEL_COUNT
-#include "private_config.h"
-
-// With our current library there can only be one strip AFAIK, so we statically allocate it
-static NeoPixelBus<NeoGrbFeature, NeoEsp8266Dma800KbpsMethod> gStrip(PIXEL_COUNT);
-
-
 
 
 LightStrip::LightStrip()
 {
-    _pixelCount = PIXEL_COUNT;
+    _pixelCount = LED_COUNT;
     _hueValues = new float[_pixelCount];
     _brightnessValues = new float[_pixelCount];
     _brightnessMultipliers = new float[_pixelCount];
@@ -27,7 +20,13 @@ LightStrip::LightStrip()
 
 void LightStrip::setup()
 {
-    gStrip.Begin();
+    Serial.print("LS: Setting up with LED_PIN(");
+    Serial.print(LED_PIN);
+    Serial.print(") LED_COUNT(");
+    Serial.print(LED_COUNT);
+    Serial.println(")");
+    FastLED.addLeds<LED_TYPE, LED_PIN, LED_COLOR_ORDER>(_leds, LED_COUNT).setCorrection( TypicalLEDStrip );
+    FastLED.show();
 }
 
 void LightStrip::ledOn(uint16_t index, float brightness)
@@ -67,7 +66,7 @@ void LightStrip::setMasterBrightness(float brightness)
 // Set pixel colors in internal buffer
 void LightStrip::updateValues()
 {
-    float saturation = 1;
+    uint8_t saturation = 255;
 
     for (int i = 0; i < _pixelCount; i++) {
 
@@ -80,15 +79,13 @@ void LightStrip::updateValues()
         Serial.println(_brightnessValues[i] * _brightnessMultipliers[i] * _masterBrightness);
         */
 
-        gStrip.SetPixelColor(
-            i,
-            HsbColor(_hueValues[i], saturation, _brightnessValues[i] * _brightnessMultipliers[i] * _masterBrightness)
-        );
+       // FastLED uses 0-255 values for HSV
+       _leds[i] = CHSV( _hueValues[i] * 255, saturation, _brightnessValues[i] * _brightnessMultipliers[i] * _masterBrightness * 255);
     }
 }
 
 void LightStrip::sendToStrip()
 {
     updateValues();
-    gStrip.Show();
+    FastLED.show();
 }

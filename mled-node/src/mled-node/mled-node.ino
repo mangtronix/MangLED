@@ -2,13 +2,25 @@
 #include <ESP8266mDNS.h>
 #include <ArduinoOTA.h>
 
+// Lighting nodes for spatialized light.
+//
+// Driven 
+
+// Many of the configuration options, such as the PIXEL_COUNT, are
+// defined in private_config.h
+
 // -- For Wemos D1 Mini --
 // Connect NeoPixel pins to D1 Mini pins
 //   +5V  -> 5V
-//    Din -> RX
+//    Din -> D3
 //    GND -> GND
 //
+// 2019-02-17 For the Wemos D1 RGB shield, need to change to pin D3
+//   - pre-wired connection to D4 is shared with status LED
+//   - cut trace on back of board marked D4
+//   - solder blob between D3 and middle pad
 // 2019-02-14 Tested and working with 5 LED strip, powered USB hub
+
 
 // Define your wifi SSID / pass in the external header file
 #include "private_config.h"

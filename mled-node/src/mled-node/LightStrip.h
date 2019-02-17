@@ -1,12 +1,15 @@
 #ifndef _LIGHTSTRIP_H
 #define _LIGHTSTRIP_H
 
-#include <NeoPixelBus.h>
+#include <FastLED.h>
+
+// We get the parameters for the physical LED strip from private_config.h
+#include <private_config.h>
 
 
 class LightStrip
 {
-    public:
+    public: 
         LightStrip();
 
         // Call this in main sketch setup
@@ -39,6 +42,8 @@ class LightStrip
         float *_brightnessValues;
         float *_brightnessMultipliers;
         float _masterBrightness;
+
+        CRGB _leds[LED_COUNT];
 
 
 };
