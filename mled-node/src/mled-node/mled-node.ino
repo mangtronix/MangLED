@@ -1,5 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
+#include <ArduinoOTA.h>
 
 // -- For Wemos D1 Mini --
 // Connect NeoPixel pins to D1 Mini pins
@@ -105,9 +106,11 @@ void setup() {
   // Set up our mled-n.local hostname
   gNodeName = String("mled-") + String(NODE_NUMBER);
   setupBonjour();
+  yield();
 
 
-  // Can't hurt
+  // Accept over the air updates
+  setupOTA();
   yield();
 
 
@@ -129,13 +132,21 @@ void setup() {
   statusLedOff();
 }
 
+
 void loop() {
+  // Process any over the air update
+  ArduinoOTA.handle();
+  yield();
+
+
   // Process Apple MIDI messages
   AppleMIDI.run();
   yield();
 
+
   MDNS.update();
   yield();
+
 
   // $$$ TODO
   // - show that we are alive, every n seconds
@@ -195,6 +206,51 @@ void setupAppleMidi() {
   Serial.print("Add device named ");
   Serial.print(gNodeName);
   Serial.println(".local:5004 and press Connect");
+}
+
+
+void setupOTA() {
+  // XXX no password!!
+  Serial.println("Setting up OTA updates"); 
+
+  ArduinoOTA.setHostname(gNodeName.c_str());
+
+  // Set the password for OTA updates in private_config.h
+  //ArduinoOTA.setPasswordHash(OTA_PASSWORD_HASH);
+  ArduinoOTA.setPassword((const char*)"superinsecure");
+
+  ArduinoOTA.onStart([]() {
+    String type;
+    if (ArduinoOTA.getCommand() == U_FLASH) {
+      type = "sketch";
+    } else { // U_SPIFFS
+      type = "filesystem";
+    }
+
+    // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
+    Serial.println("Start updating " + type);
+  });
+  ArduinoOTA.onEnd([]() {
+    Serial.println("\nEnd");
+  });
+  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
+    Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+  });
+  ArduinoOTA.onError([](ota_error_t error) {
+    Serial.printf("Error[%u]: ", error);
+    if (error == OTA_AUTH_ERROR) {
+      Serial.println("Auth Failed");
+    } else if (error == OTA_BEGIN_ERROR) {
+      Serial.println("Begin Failed");
+    } else if (error == OTA_CONNECT_ERROR) {
+      Serial.println("Connect Failed");
+    } else if (error == OTA_RECEIVE_ERROR) {
+      Serial.println("Receive Failed");
+    } else if (error == OTA_END_ERROR) {
+      Serial.println("End Failed");
+    }
+  });
+  ArduinoOTA.begin();
 }
 
 

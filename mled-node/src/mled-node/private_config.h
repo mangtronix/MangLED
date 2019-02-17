@@ -14,6 +14,15 @@
 #define WIFI_PASSWORD "lightitup"
 #endif
 
+// To set a new password, get the hash and put it here. This way the plaintext
+// password is not stored on the device or in this file.
+// $ echo "my password" | md5
+//
+// The default password is "superinsecure"
+#ifndef OTA_PASSWORD_HASH
+#define OTA_PASSWORD_HASH "ed25ab87f72c8a72a73e2b492fbe3cd1"
+#endif
+
 // This sets the node number which corresponds to:
 // - host name, e.g. mled-1
 // - MIDI channel name, e.g. 1
@@ -32,7 +41,7 @@
 #define MLED_CHANNEL -1
 #endif
 
-// The first note to respond to. Defaults to GM Drum kit
+// The first note to respond to. Defaults to GM Drum kit, starts at B0
 #ifndef MLED_BASE_NOTE
 #define MLED_BASE_NOTE 35
 #endif 
