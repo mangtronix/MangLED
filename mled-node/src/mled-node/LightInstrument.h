@@ -1,6 +1,18 @@
 #ifndef _LIGHTINSTRUMENT_H
 #define _LIGHTINSTRUMENT_H
 
+// The LightInstrument responds to MIDI data and drives an LED strip.
+// You send notes and control change messages to the LightInstrument
+// and it keeps track of what brightnesses the LEDs should be set to.
+//
+// LightInstrument:
+// - handles mapping of notes to LED strip segments
+// - adjusts hue of each segment
+// - the brigntness of each segment is the result of
+//   - velocity of the note that triggered the segment
+//   - the brightness "multiplier" for the segment that sets the maximum brightness of the segment
+//   - the master brightness (for all segments)
+
 #include "Arduino.h"
 
 class LightStrip;

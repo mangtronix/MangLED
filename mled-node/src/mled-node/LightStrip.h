@@ -1,6 +1,12 @@
 #ifndef _LIGHTSTRIP_H
 #define _LIGHTSTRIP_H
 
+// LightStrip provides functions for controlling a physical LED strip
+//
+// You can use LightStrip without having to directly access the underlying
+// LED library.
+
+
 #include <FastLED.h>
 
 // We get the parameters for the physical LED strip from private_config.h
