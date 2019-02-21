@@ -213,11 +213,11 @@ void LightInstrument::sendToStrip()
 
 void LightInstrument::segmentOn(uint8_t segment, float brightness)
 {
-    if (segment >= 0 && segment < _segmentCount) {
-        uint16_t firstPixel = segment * _pixelsPerSegment;
+    if ((segment >= 0) && (segment < _segmentCount)) {
 
-        for (uint16_t pixel = firstPixel; pixel < _pixelsPerSegment; pixel++) {
-            _lightStrip->ledOn(pixel, brightness);
+        uint16_t firstPixel = segment * _pixelsPerSegment;
+        for (uint16_t offset = 0; offset < _pixelsPerSegment; offset++) {
+            _lightStrip->ledOn(firstPixel + offset, brightness);
         }
     }
 }
@@ -225,10 +225,10 @@ void LightInstrument::segmentOn(uint8_t segment, float brightness)
 void LightInstrument::segmentOff(uint8_t segment)
 {
     if (segment >= 0 && segment < _segmentCount) {
-        uint16_t firstPixel = segment * _pixelsPerSegment;
 
-        for (uint16_t pixel = firstPixel; pixel < _pixelsPerSegment; pixel++) {
-            _lightStrip->ledOff(pixel);
+        uint16_t firstPixel = segment * _pixelsPerSegment;
+        for (uint16_t offset = 0; offset < _pixelsPerSegment; offset++) {
+            _lightStrip->ledOff(firstPixel + offset);
         }
     }
 }
