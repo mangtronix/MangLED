@@ -96,17 +96,27 @@ void LightInstrument::onAppleMidiControlChange(byte channel, byte controller, by
             return;
         }
 
+        // Check if we have a valid segment controller message
         uint8_t segment = controllerToSegment(controller);
         if (segment >=0 && segment < _segmentCount) {
+            uint16_t firstLed = _pixelsPerSegment * segment;
+
             switch (ccType) {
                 case CONTROLLER_HUE:
                     Serial.println("HUE");
-                    _lightStrip->setHue(segment, valueToHue(value));
+                    // Change the hue for all the pixels in the segment
+                    for (uint16_t offset = 0; offset < _pixelsPerSegment; offset++) {
+                        _lightStrip->setHue(firstLed + offset, valueToHue(value));
+                    }
+                    
                     break;
 
                 case CONTROLLER_BRIGHTNESS:
                     Serial.println("BRIGHTNESS");
-                    _lightStrip->setBrightnessMultiplier(segment, valueToBrightnessMultiplier(value));
+                    // Change brightness for all the pixels in the segment
+                    for (uint16_t offset = 0; offset < _pixelsPerSegment; offset++) {
+                        _lightStrip->setBrightnessMultiplier(firstLed + offset, valueToBrightnessMultiplier(value));
+                    }                    
                     break;
 
                 default:
