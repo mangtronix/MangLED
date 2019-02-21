@@ -1,7 +1,7 @@
 #include "LightInstrument.h"
 #include "LightStrip.h"
 
-LightInstrument::LightInstrument(int8_t midiChannel, LightStrip* lightStrip)
+LightInstrument::LightInstrument(int8_t midiChannel, LightStrip* lightStrip, uint16_t segmentCount)
 {
     _baseNote = 0;
     _baseBrightnessCC = 0;
@@ -11,11 +11,7 @@ LightInstrument::LightInstrument(int8_t midiChannel, LightStrip* lightStrip)
     _midiChannel = midiChannel;
     _lightStrip = lightStrip;
 
-    // Currently we map one pixel to one segment/controller/note
-    //_segmentCount = _lightStrip->pixelCount();
-
-    // Use the entire strip as one segment
-    _segmentCount = 1;
+    _segmentCount = segmentCount;
     _pixelsPerSegment = _lightStrip->pixelCount() / _segmentCount;
 
 }

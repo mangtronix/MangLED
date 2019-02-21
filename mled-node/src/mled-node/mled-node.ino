@@ -81,7 +81,7 @@ void setup() {
   // Create the light instrument and attach the led strip
   gLightStrip.setup();
   gLightStrip.sendToStrip(); // Turn LED strip off
-  pLightInstrument = new LightInstrument(MLED_CHANNEL, &gLightStrip);
+  pLightInstrument = new LightInstrument(MLED_CHANNEL, &gLightStrip, MLED_SEGMENT_COUNT);
   pLightInstrument->sendToStrip(); // Initial display on the LED strip
 
   // Set up the mapping of MIDI controllers and notes

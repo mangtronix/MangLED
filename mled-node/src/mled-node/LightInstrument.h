@@ -33,9 +33,10 @@ class LightInstrument
     public:
 
         // midiChannel can be <= 0 for omni response
-        LightInstrument(int8_t midiChannel, LightStrip* lightStrip);
+        // Each segment (one or more LEDs) responds to a note and multiple controllers
+        LightInstrument(int8_t midiChannel, LightStrip* lightStrip, uint16_t segmentCount);
 
-        // First note, goes to LED 0
+        // First note, goes to segment 0
         void setBaseNote(byte note) { _baseNote = note; };
 
         // First controller for hue

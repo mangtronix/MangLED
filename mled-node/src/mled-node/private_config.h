@@ -49,14 +49,13 @@
 
 // The first controller for hue to respond to
 #ifndef MLED_BASE_HUE_CC
-#define MLED_BASE_HUE_CC (10 + NODE_NUMBER)
+#define MLED_BASE_HUE_CC (20 + NODE_NUMBER)
 #endif
 
 // The master brightness controller (all nodes)
 #ifndef MLED_MASTER_BRIGHTNESS_CC
-#define MLED_MASTER_BRIGHTNESS_CC 20
+#define MLED_MASTER_BRIGHTNESS_CC 40
 #endif
-
 
 
 // Physical LED strip defines
@@ -79,6 +78,12 @@
 #define LED_COLOR_ORDER GRB
 #endif
 
+
+// The number of controllable segments in the LightInstrument
+// The physical LEDs (LED_COUNT) are divided into the segments
+#ifndef MLED_SEGMENT_COUNT
+#define MLED_SEGMENT_COUNT 1
+#endif
 
 
 #endif
