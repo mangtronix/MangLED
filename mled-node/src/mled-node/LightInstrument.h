@@ -13,6 +13,15 @@
 //   - the brightness "multiplier" for the segment that sets the maximum brightness of the segment
 //   - the master brightness (for all segments)
 
+// TODO
+// - allow setting white (via saturation?)
+// - fading for on/on
+//   - requires periodic update, with e.g. ADSR
+// - set all segments via one parameter?
+// - toggle segment on/off
+//   - then can control brightness directly via controller, no notes
+// - RGB control mode?
+
 #include "Arduino.h"
 
 class LightStrip;
@@ -48,6 +57,9 @@ class LightInstrument
 
         bool shouldRespondToChannel(byte channel) { return ((_midiChannel <= 0) || (channel == _midiChannel)); };
 
+        // The number of individually controllable LED segments
+        uint16_t segmentCount() { return _segmentCount; };
+
 
         // Update what's shown on the LED strip
         void sendToStrip();
@@ -81,9 +93,11 @@ class LightInstrument
         byte _baseHueCC;
         byte _baseBrightnessCC;
         byte _masterBrightnessCC;
-        uint8_t _segmentCount; // count of addressable light elements
+        uint16_t _segmentCount; // count of addressable light elements
+        uint16_t _pixelsPerSegment; // number of physical pixels per segment
 
         LightStrip* _lightStrip;
+
 
 };
 

@@ -36,24 +36,25 @@
 #define MLED_CHANNEL -1
 #endif
 
-// The first note to respond to. Defaults to GM Drum kit, starts at B0
+// The first note to respond to for this node.
+// Node 1 responds to note C3 (48)
 #ifndef MLED_BASE_NOTE
-#define MLED_BASE_NOTE 35
+#define MLED_BASE_NOTE (47 + NODE_NUMBER)
 #endif 
-
-// The first controller for hue to respond to
-#ifndef MLED_BASE_HUE_CC
-#define MLED_BASE_HUE_CC 1
-#endif
 
 // The first controller for brightness multiplier (max brightness) to respond to
 #ifndef MLED_BASE_BRIGHTNESS_CC
-#define MLED_BASE_BRIGHTNESS_CC 11
+#define MLED_BASE_BRIGHTNESS_CC (0 + NODE_NUMBER)
 #endif
 
-// The master brightness controller
+// The first controller for hue to respond to
+#ifndef MLED_BASE_HUE_CC
+#define MLED_BASE_HUE_CC (10 + NODE_NUMBER)
+#endif
+
+// The master brightness controller (all nodes)
 #ifndef MLED_MASTER_BRIGHTNESS_CC
-#define MLED_MASTER_BRIGHTNESS_CC 9
+#define MLED_MASTER_BRIGHTNESS_CC 20
 #endif
 
 

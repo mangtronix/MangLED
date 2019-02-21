@@ -12,7 +12,11 @@ LightInstrument::LightInstrument(int8_t midiChannel, LightStrip* lightStrip)
     _lightStrip = lightStrip;
 
     // Currently we map one pixel to one segment/controller/note
-    _segmentCount = _lightStrip->pixelCount();
+    //_segmentCount = _lightStrip->pixelCount();
+
+    // Use the entire strip as one segment
+    _segmentCount = 1;
+    _pixelsPerSegment = _lightStrip->pixelCount() / _segmentCount;
 
 }
 
@@ -197,16 +201,22 @@ void LightInstrument::sendToStrip()
 
 void LightInstrument::segmentOn(uint8_t segment, float brightness)
 {
-    // Currently a segment corresponds directly to a single LED
     if (segment >= 0 && segment < _segmentCount) {
-        _lightStrip->ledOn(segment, brightness);
+        uint16_t firstPixel = segment * _pixelsPerSegment;
+
+        for (uint16_t pixel = firstPixel; pixel < _pixelsPerSegment; pixel++) {
+            _lightStrip->ledOn(pixel, brightness);
+        }
     }
 }
 
 void LightInstrument::segmentOff(uint8_t segment)
 {
-    // Currently a segment corresponds directly to a single LED
     if (segment >= 0 && segment < _segmentCount) {
-        _lightStrip->ledOff(segment);
+        uint16_t firstPixel = segment * _pixelsPerSegment;
+
+        for (uint16_t pixel = firstPixel; pixel < _pixelsPerSegment; pixel++) {
+            _lightStrip->ledOff(pixel);
+        }
     }
 }
