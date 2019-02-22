@@ -1,6 +1,9 @@
 #include "Arduino.h"
 #include "LightStrip.h"
 
+// XXX hack to make the brightness knobs set the default brightness
+//     notes will temporarily override
+#define INDEPENDENT_BRIGHTNESS_CC
 
 
 LightStrip::LightStrip()
@@ -14,7 +17,16 @@ LightStrip::LightStrip()
     for (int i = 0; i < _pixelCount; i++) {
         _hueValues[i] = 0;
         _brightnessValues[i] = 0;
+
+#ifdef INDEPENDENT_BRIGHTNESS_CC
+        // Set the "baseline" brightness to 0 (off) until it gets set
+        // via a CC value
+        _brightnessMultipliers[i] = 0;
+#else
+        // Set the multiplier to 1 (allow full brightness from note) until it gets reduced by a CC
         _brightnessMultipliers[i] = 1;
+#endif
+
     }
 }
 
@@ -79,8 +91,13 @@ void LightStrip::updateValues()
         Serial.println(_brightnessValues[i] * _brightnessMultipliers[i] * _masterBrightness);
         */
 
+#ifdef INDEPENDENT_BRIGHTNESS_CC
+        uint16_t brightness = (_brightnessValues[i] + _brightnessMultipliers[i]) * _masterBrightness * 255;
+       _leds[i] = CHSV( _hueValues[i] * 255, saturation, brightness);
+#else
        // FastLED uses 0-255 values for HSV
-       _leds[i] = CHSV( _hueValues[i] * 255, saturation, _brightnessValues[i] * _brightnessMultipliers[i] * _masterBrightness * 255);
+#endif
+
     }
 }
 
