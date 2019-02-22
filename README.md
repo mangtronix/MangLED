@@ -2,11 +2,15 @@
 
 A system to control a network of lighting nodes over WiFi, using RTP-MIDI (aka Apple Midi or rtpMIDI).
 
+![MangLED in the field](https://www.michaelang.com/blog/wp-content/uploads/2019/02/in_the_field-1080x1440.jpg)
+
 Each node:
 - has an attached LED strip, that is divided into controllable "segments"
 - waits for Apple Midi / rtpMIDI connections
 - responds to MIDI notes and controllers
 - has a number, which is also registered as an mDNS/Bonjour hostname (e.g. mled-1.local)
+
+![MangLED wearable](https://www.michaelang.com/blog/wp-content/uploads/2019/02/wearable-1080x1440.jpg)
 
 The MIDI mapping is configurable using #defines during the compile (in private_config.h or platformio.ini).
 
