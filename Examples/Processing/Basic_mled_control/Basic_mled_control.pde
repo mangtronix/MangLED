@@ -46,14 +46,15 @@ void draw() {
   }
 
   // Turn all the nodes on with notes
-  int baseNote = 48;
+  // The first node (node 1) has note 48 (C2/C3)
+  int baseNote = 47;
   println("Turning on all nodes");
   for (int node = 1; node <= nodeCount; node++) {
     int pitch = baseNote + node;
     int velocity = 100;
     myBus.sendNoteOn(channel, pitch, velocity); // Send a Midi noteOn
   }
-  delay(1000);
+  delay(2000);
   for (int node = 1; node <= nodeCount; node++) {
     int pitch = baseNote + node;
     int velocity = 0;
