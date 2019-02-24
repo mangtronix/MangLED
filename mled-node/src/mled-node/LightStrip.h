@@ -10,7 +10,7 @@
 #include <FastLED.h>
 
 // We get the parameters for the physical LED strip from private_config.h
-#include <private_config.h>
+#include "private_config.h"
 
 
 class LightStrip
