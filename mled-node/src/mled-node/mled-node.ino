@@ -228,9 +228,8 @@ void setupOTA() {
   ArduinoOTA.setHostname(gNodeName.c_str());
 
   // Set the password for OTA updates in private_config.h
-  //ArduinoOTA.setPasswordHash(OTA_PASSWORD_HASH);
-  ArduinoOTA.setPassword((const char*)"superinsecure");
-
+  ArduinoOTA.setPasswordHash(OTA_PASSWORD_HASH);
+  
   ArduinoOTA.onStart([]() {
     String type;
     if (ArduinoOTA.getCommand() == U_FLASH) {
