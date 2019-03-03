@@ -222,7 +222,6 @@ void setupAppleMidi() {
 
 
 void setupOTA() {
-  // XXX no password!!
   Serial.println("Setting up OTA updates"); 
 
   ArduinoOTA.setHostname(gNodeName.c_str());
